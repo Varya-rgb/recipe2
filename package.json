@@ -1,0 +1,17 @@
+{
+  "name": "recipe-site",
+  "version": "1.0.0",
+  "description": "Красивый сайт рецептов с авторизацией",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "setup": "node setup.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "mysql2": "^3.6.0",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.1",
+    "cors": "^2.8.5"
+  }
+}

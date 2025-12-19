@@ -1,0 +1,325 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вкусные рецепты - Кулинарное сообщество</title>
+    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav container">
+            <div class="nav-brand">
+                <i class="fas fa-utensils"></i>
+                <span>Вкусные рецепты</span>
+            </div>
+            <div class="nav-links">
+                <a href="#" onclick="showPage('home')">Главная</a>
+                <a href="#" onclick="showPage('recipes')">Все рецепты</a>
+                <a href="#" onclick="showPage('bookmarks')">Закладки</a>
+                <a href="#" onclick="showPage('add-recipe')">Добавить рецепт</a>
+                <!-- <a href="#" onclick="showPage('account')" id="accountLink" style="display: none;">Мой аккаунт</a> -->
+                 <!-- Обновите эту строку в nav-links -->
+<a href="#" onclick="showAccount(); return false;" id="accountLink" style="display: none;">Мой аккаунт</a>
+            </div>
+            <div class="nav-auth" id="navAuth">
+                <button class="btn btn-outline" onclick="showAuthModal('login')">Вход</button>
+                <button class="btn btn-primary" onclick="showAuthModal('register')">Регистрация</button>
+            </div>
+            <div class="nav-user" id="navUser" style="display: none;">
+                <span id="userName">Пользователь</span>
+                <button class="btn btn-outline" onclick="logout()">Выйти</button>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main">
+        <!-- Home Page -->
+        <section id="home" class="page active">
+            <div class="hero">
+                <div class="container">
+                    <h1>Откройте мир вкусных рецептов</h1>
+                    <p>Находите, сохраняйте и делитесь лучшими рецептами</p>
+                    <button class="btn btn-primary btn-large" onclick="showPage('recipes')">
+                        Начать готовить <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="container">
+                <h2 class="section-title">Популярные рецепты</h2>
+                <div class="recipes-grid" id="featuredRecipes">
+                    <!-- Featured recipes will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- All Recipes Page -->
+        <section id="recipes" class="page">
+            <div class="container">
+                <div class="page-header">
+                    <h1>Все рецепты</h1>
+                    <div class="search-box">
+                        <input type="text" id="searchInput" placeholder="Поиск рецептов...">
+                        <button class="btn btn-primary" onclick="searchRecipes()">
+                            <i class="fas fa-search"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="recipes-grid" id="allRecipes">
+                    <!-- All recipes will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Recipe Detail Page -->
+        <section id="recipe-detail" class="page">
+            <div class="container">
+                <button class="back-btn" onclick="showPage('recipes')">
+                    <i class="fas fa-arrow-left"></i> Назад к рецептам
+                </button>
+                <div id="recipeDetailContent">
+                    <!-- Recipe detail will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Bookmarks Page -->
+        <section id="bookmarks" class="page">
+            <div class="container">
+                <h1>Мои закладки</h1>
+                <div class="recipes-grid" id="bookmarksGrid">
+                    <!-- Bookmarks will be loaded here -->
+
+
+</div>
+                <div id="emptyBookmarks" class="empty-state">
+                    <i class="far fa-bookmark"></i>
+                    <h3>Закладок пока нет</h3>
+                    <p>Сохраняйте понравившиеся рецепты здесь</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Add Recipe Page -->
+        <section id="add-recipe" class="page">
+            <div class="container">
+                <h1>Добавить рецепт</h1>
+                <form id="addRecipeForm" class="recipe-form">
+                    <div class="form-group">
+                        <label>Название рецепта</label>
+                        <input type="text" id="recipeTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Описание</label>
+                        <textarea id="recipeDescription" rows="3"></textarea>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Время приготовления (мин)</label>
+                            <input type="number" id="recipeTime" min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Количество порций</label>
+                            <input type="number" id="recipeServings" min="1" value="2">
+                        </div>
+                        <div class="form-group">
+                            <label>Сложность</label>
+                            <select id="recipeDifficulty">
+                                <option value="Легко">Легко</option>
+                                <option value="Средняя">Средняя</option>
+                                <option value="Сложно">Сложно</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ссылка на изображение</label>
+                        <input type="url" id="recipeImage" placeholder="https://example.com/image.jpg">
+                    </div>
+                    <div class="form-group">
+                        <label>Ингредиенты (каждый с новой строки)</label>
+                        <textarea id="recipeIngredients" rows="5" placeholder="200г муки&#10;2 яйца&#10;100мл молока" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Инструкции (каждый шаг с новой строки)</label>
+                        <textarea id="recipeInstructions" rows="5" placeholder="Шаг 1: Смешайте ингредиенты&#10;Шаг 2: Выпекайте 30 минут" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-large">Добавить рецепт</button>
+                </form>
+            </div>
+        </section>
+
+        <!-- Account Page -->
+<section id="account" class="page">
+    <div class="container">
+        <div class="account-header">
+            <h1>Мой аккаунт</h1>
+        </div>
+        
+        <div class="account-layout">
+            <!-- Sidebar -->
+            <div class="account-sidebar">
+                <div class="profile-card">
+    <div class="avatar-container">
+        <img src="" alt="Аватар" id="userAvatar" class="user-avatar">
+        <button class="avatar-upload-btn" onclick="showAvatarModal()">
+            <i class="fas fa-camera"></i>
+        </button>
+    </div>
+    <h2 id="accountUserName">Пользователь</h2>
+    <p id="accountUserEmail">email@example.com</p>
+    <button class="btn btn-outline btn-small" onclick="showAccountSection('settings')">
+        <i class="fas fa-cog"></i> Настройки профиля
+    </button>
+</div>
+
+<!-- Добавь модальное окно для ввода URL аватара (рядом с другими модалками) -->
+<div id="avatarModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeAvatarModal()">&times;</span>
+        <h2>Изменить аватар</h2>
+        <form id="avatarForm">
+            <div class="form-group">
+                <label>URL изображения</label>
+                <input type="url" id="avatarUrl" 
+                       placeholder="https://example.com/avatar.jpg"
+                       required>
+                <small class="form-hint">Вставьте ссылку на изображение (JPG, PNG, GIF)</small>
+            </div>
+            <div class="avatar-preview" id="avatarPreview">
+                <img src="" alt="Предпросмотр" id="previewImage">
+                <p id="previewText">Предпросмотр появится здесь</p>
+            </div>
+            <button type="submit" class="btn btn-primary btn-full">
+                <i class="fas fa-save"></i> Сохранить аватар
+            </button>
+            <button type="button" class="btn btn-outline btn-full" onclick="resetAvatar()" style="margin-top: 10px;">
+    <i class="fas fa-times"></i> Сбросить аватар
+</button>
+        </form>
+    </div>
+</div>
+
+                <nav class="account-nav">
+                    <button class="nav-item active" onclick="showAccountSection('my-recipes')">
+                        <i class="fas fa-book"></i> Мои рецепты
+                    </button>
+                    <button class="nav-item" onclick="showAccountSection('bookmarks')">
+                        <i class="fas fa-bookmark"></i> Мои закладки
+                    </button>
+                    <button class="nav-item" onclick="showAccountSection('settings')">
+                        <i class="fas fa-cog"></i> Настройки
+                    </button>
+                </nav>
+            </div>
+            
+            <!-- Main Content -->
+            <div class="account-content">
+                <!-- Мои рецепты -->
+                <div id="my-recipes-section" class="account-section active">
+                    <div class="section-header">
+                        <h2>Мои рецепты</h2>
+                        <span class="recipes-count" id="myRecipesCount">0 рецептов</span>
+                    </div>
+                    <div class="recipes-grid" id="myRecipesGrid">
+                        <!-- Мои рецепты будут здесь -->
+                    </div>
+                    <div id="emptyMyRecipes" class="empty-state">
+                        <i class="fas fa-book"></i>
+                        <h3>У вас пока нет рецептов</h3>
+                        <p>Создайте свой первый рецепт!</p>
+                        <button class="btn btn-primary" onclick="showPage('add-recipe')">
+                            Добавить рецепт
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Мои закладки -->
+                <div id="bookmarks-section" class="account-section">
+                    <div class="section-header">
+                        <h2>Мои закладки</h2>
+                        <span class="recipes-count" id="myBookmarksCount">0 закладок</span>
+                    </div>
+                    <div class="recipes-grid" id="accountBookmarksGrid">
+                        <!-- Закладки будут здесь -->
+                    </div>
+                    <div id="emptyAccountBookmarks" class="empty-state">
+                        <i class="far fa-bookmark"></i>
+                        <h3>Закладок пока нет</h3>
+                        <p>Сохраняйте понравившиеся рецепты в закладки</p>
+                    </div>
+                </div>
+                
+                <!-- Настройки -->
+                <div id="settings-section" class="account-section">
+                    <div class="section-header">
+<h2>Настройки профиля</h2>
+                    </div>
+                    <form id="profileForm" class="profile-form">
+                        <div class="form-group">
+                            <label>Имя пользователя</label>
+                            <input type="text" id="profileName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="profileEmail" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Новый пароль (оставьте пустым, если не хотите менять)</label>
+                            <input type="password" id="profilePassword">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Сохранить изменения</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+    </main>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAuthModal()">&times;</span>
+            <h2 id="authModalTitle">Вход</h2>
+            <form id="authForm">
+                <div id="registerFields" style="display: none;">
+                    <div class="form-group">
+                        <label>Имя</label>
+                        <input type="text" id="registerName">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="authEmail" required>
+                </div>
+                <div class="form-group">
+                    <label>Пароль</label>
+                    <input type="password" id="authPassword" required>
+                </div>
+                <button type="submit" class="btn btn-primary btn-full">Продолжить</button>
+
+
+</form>
+            <div class="auth-switch">
+                <span id="authSwitchText">Нет аккаунта?</span>
+                <a href="#" id="authSwitchLink" onclick="switchAuthMode()">Зарегистрироваться</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Вкусные рецепты. Все права защищены.</p>
+        </div>
+    </footer>
+
+       <script src="./script.js"></script>
+</body>
+</html>
