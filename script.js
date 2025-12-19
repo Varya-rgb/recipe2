@@ -701,8 +701,6 @@ function showAccount() {
 
 // Загрузка данных аккаунта
 async function loadAccountData() {
-    // ДОБАВЬТЕ ЭТОТ ЛОГ СРАЗУ
-    console.log('loadAccountData вызвана. currentUser:', currentUser);
     if (!currentUser) return;
    
     try {
@@ -710,14 +708,19 @@ async function loadAccountData() {
         document.getElementById('accountUserName').textContent = currentUser.name;
         document.getElementById('accountUserEmail').textContent = currentUser.email;
        
+        // ===== ИСПРАВЛЕННЫЙ БЛОК ДЛЯ АВАТАРА =====
         // Загружаем аватар из данных пользователя
         if (currentUser.avatar_url) {
+            // Если ссылка на аватар есть в данных пользователя
             document.getElementById('userAvatar').src = currentUser.avatar_url;
+            console.log('Аватар загружен из user.avatar_url:', currentUser.avatar_url);
         } else {
-            // Генерируем дефолтный аватар
-            //const defaultAvatar = https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=ff6b6b&color=fff&size=120;
-            document.getElementById('userAvatar').src = defaultAvatar; 
+            // Если аватара нет - генерируем дефолтный
+            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(currentUser.name)}&background=ff6b6b&color=fff&size=120`;
+            document.getElementById('userAvatar').src = defaultAvatar;
+            console.log('Установлен дефолтный аватар:', defaultAvatar);
         }
+        // ===== КОНЕЦ ИСПРАВЛЕННОГО БЛОКА =====
        
         // Загружаем мои рецепты
         await loadMyRecipes();
@@ -733,7 +736,6 @@ async function loadAccountData() {
         console.error('Ошибка загрузки данных аккаунта:', error);
     }
 }
-
 // Переключение разделов в аккаунте
 function showAccountSection(sectionId) {
     // Скрываем все разделы
